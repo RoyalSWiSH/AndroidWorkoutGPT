@@ -1,6 +1,7 @@
 package bio.gelly.workoutplanner.data.datasource
 
 
+import android.util.Log
 import bio.gelly.workoutplanner.data.model.WorkoutInfo
 import bio.gelly.workoutplanner.network.retrofit.WorkoutApiService
 import bio.gelly.workoutplanner.data.repository.Result
@@ -14,6 +15,16 @@ class WorkoutRemoteDataSource(private val apiService: WorkoutApiService):Workout
     override suspend fun fetchWorkoutData(requestBody: RequestBody): Result<ResponseBody> {
         try {
             val response = apiService.fetchWorkoutData(requestBody)
+            val responseBody = response.body()
+            if (responseBody != null) {
+                val content = responseBody.string()
+                println(content)
+                // Don't forget to close the response body after using it
+                responseBody.close()
+            } else {
+                // Handle the case where the response body is null
+                println("Error when API Request")
+            }
 
             // Use ApiService's parseResponseBody function to parse the response
             return apiService.parseResponseBody(response)

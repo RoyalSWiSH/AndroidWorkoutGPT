@@ -18,7 +18,7 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
             // You can implement the logic to fetch workout data from a data source (e.g., API, database)
             val apiRequest = ApiRequest(
                 model = "gpt-3.5-turbo",
-                messages = listOf(Message(role = "user", content = "Say this is a test!")),
+                messages = listOf(Message(role = "user", content = "Make a joke!")),
                 temperature = 0.7
             )
             val requestBodyJson = Gson().toJson(apiRequest)
@@ -39,6 +39,11 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
                     // Handle the error response here
                     Result.Error("Error when casting Result")
                 }
+                is Result.Loading -> {
+
+                    // Handle the error response here
+                    Result.Loading
+                    }
             }
 
 
@@ -57,6 +62,7 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
 sealed class Result<out T> {
     data class Success<out T>(val data: T) : Result<T>()
     data class Error(val errorMessage: String) : Result<Nothing>()
+    object Loading : Result<Nothing>()
 }
 //
 //interface WorkoutRepository {
