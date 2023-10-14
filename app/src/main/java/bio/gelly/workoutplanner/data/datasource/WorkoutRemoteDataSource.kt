@@ -53,11 +53,14 @@ class WorkoutRemoteDataSource(private val apiService: WorkoutApiService):Workout
             println("parseResponseBody 1")
             if (response.isSuccessful) {
                 response.body()?.use { responseBody ->
+                    println("parseResponseBody")
                     val content = responseBody.string()
+                    println(content)
                     val gson = Gson()
                     val chatGTPResponseDTO = gson.fromJson(content, ChatGPTResponseDTO::class.java)
+                    // TODO: Catch casting error
                     val workoutInfo = WorkoutInfo(id = chatGTPResponseDTO.id, workoutData = WorkoutData(workoutPlan = chatGTPResponseDTO.choices[0].message.content) )
-                    println("parseResponseBody")
+
 //                    println(workoutInfo.toString())
                     Result.Success(workoutInfo)
 
@@ -66,7 +69,7 @@ class WorkoutRemoteDataSource(private val apiService: WorkoutApiService):Workout
                 // Handle the error response and return it as Result.Error
                 val errorBody = response.errorBody()
                 val errorMessage = parseErrorResponseBody(errorBody)
-                println("Response Error")
+                println("Response Error $errorMessage")
                 Result.Error(errorMessage)
             }
         } catch (e: IOException) {

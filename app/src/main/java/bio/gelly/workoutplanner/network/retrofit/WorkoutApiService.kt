@@ -17,7 +17,7 @@ interface WorkoutApiService {
 // TODO: Remove OpenAI token
     @Headers(
         "Content-Type: application/json",
-        "Authorization: Bearer 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"
+        "Authorization: Bearer $OPEN_API_KEY"
     )
     @POST("chat/completions")
     suspend fun fetchWorkoutData(@Body requestBody: RequestBody): Response<ResponseBody>

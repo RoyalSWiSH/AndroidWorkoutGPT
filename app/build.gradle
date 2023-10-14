@@ -3,6 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+ext {
+    openAIKey = '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'
+}
+
 android {
     namespace 'bio.gelly.workoutplanner'
     compileSdk 33
