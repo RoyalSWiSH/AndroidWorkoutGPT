@@ -32,7 +32,6 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
                     // Handle the successful response here
                     // TODO: Cast responsebody to workoutinfo
                     println("WorkoutRepository")
-                    println(result.data)
 
                     Result.Success(workoutInfo)
                 }

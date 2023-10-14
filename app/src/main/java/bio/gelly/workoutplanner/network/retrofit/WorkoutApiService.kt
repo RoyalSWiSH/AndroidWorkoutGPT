@@ -14,7 +14,7 @@ import java.io.IOException
 
 
 interface WorkoutApiService {
-
+// TODO: Remove OpenAI token
     @Headers(
         "Content-Type: application/json",
         "Authorization: Bearer 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"
@@ -22,43 +22,4 @@ interface WorkoutApiService {
     @POST("chat/completions")
     suspend fun fetchWorkoutData(@Body requestBody: RequestBody): Response<ResponseBody>
 
-    // Function to parse the successful response body
-
-//    fun parseResponseBody(response: Response<ResponseBody>): Result<WorkoutInfo> {
-//       return try {
-//            println("parseResponseBody 1")
-//            if (response.isSuccessful) {
-//                response.body()?.use { responseBody ->
-//                    val content = responseBody.string()
-//                    val gson = Gson()
-//                    val workoutInfo = gson.fromJson(content, WorkoutInfo::class.java)
-//                    println("parseResponseBody")
-//                    println(workoutInfo.toString())
-//                    Result.Success(workoutInfo)
-//
-//                } ?: Result.Error("ResponseBody is null")
-//            } else {
-//                // Handle the error response and return it as Result.Error
-//                val errorBody = response.errorBody()
-//                val errorMessage = parseErrorResponseBody(errorBody)
-//                println("Response Error")
-//                Result.Error(errorMessage)
-//            }
-//        } catch (e: IOException) {
-//            // Log the exception for debugging and return an error result
-//            println("Parsing error: ${e.message}")
-//            Result.Error("Failed to parse the response: ${e.message}")
-//        }
-//
-//    }
-
-    // Function to parse the error response body
-//    fun parseErrorResponseBody(errorBody: ResponseBody?): String {
-//        println("Parse Error")
-//        return try {
-//            errorBody?.string() ?: "Unknown error"
-//        } catch (e: Exception) {
-//            "Error parsing error response: ${e.message}"
-//        }
-//    }
 }

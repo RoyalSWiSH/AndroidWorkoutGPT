@@ -25,18 +25,9 @@ import okhttp3.ResponseBody
 
 class WorkoutViewModel(private val workoutRepository: WorkoutRepository) : ViewModel() {
 
-//    private val _workoutInfoState = MutableLiveData<Result<WorkoutInfo>>()
-//    val workoutInfoState: LiveData<Result<WorkoutInfo>> = _workoutInfoState
-
-    private val _responseBodyInfoState = MutableLiveData<Result<ResponseBody>>()
-    val responseBody: LiveData<Result<ResponseBody>> = _responseBodyInfoState
-
-//    private val _workoutInfoLiveData = MutableLiveData<Result<WorkoutInfo>>()
-//    val workoutInfoLiveData: LiveData<Result<WorkoutInfo>> = _workoutInfoLiveData
     private val _workoutInfoState = MutableStateFlow<Result<WorkoutInfo>>(Result.Loading)
     val workoutInfoState: StateFlow<Result<WorkoutInfo>> = _workoutInfoState
 
-//    val workoutInfoState: LiveData<Result<WorkoutInfo>> = liveData(Dispatchers.IO) {
 init {
     // You can initialize your StateFlow here, if needed.
     refreshWorkoutInfo()
@@ -57,27 +48,6 @@ init {
     private suspend fun fetchWorkoutInfo(): Result<WorkoutInfo> {
         return workoutRepository.getWorkoutInfo()
     }
-
-    // Function to fetch workout information
-//    fun refreshWorkoutInfo() {
-//        viewModelScope.launch {
-//            try {
-//                val workoutInfo = fetchWorkoutInfo()
-//                workoutInfoState.postValue(workoutInfo)
-//            } catch (e: Exception) {
-//                workoutInfoState.postValue(Result.Error(e.localizedMessage ?: "An error occurred"))
-//            }
-//        }
-//    }
-
-//    fun fetchWorkoutInfo() {
-//        // Perform the data fetching operation, e.g., using a repository
-//        viewModelScope.launch {
-//            val result = repository.getWorkoutInfo()
-//            _responseBodyInfoState.value = result
-////            _workoutInfoState.value = result
-//        }
-//    }
 }
 
 class WorkoutViewModelFactory(private val workoutRepository: WorkoutRepository) : ViewModelProvider.Factory {

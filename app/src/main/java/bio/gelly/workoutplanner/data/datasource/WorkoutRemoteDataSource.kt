@@ -58,7 +58,7 @@ class WorkoutRemoteDataSource(private val apiService: WorkoutApiService):Workout
                     val chatGTPResponseDTO = gson.fromJson(content, ChatGPTResponseDTO::class.java)
                     val workoutInfo = WorkoutInfo(id = chatGTPResponseDTO.id, workoutData = WorkoutData(workoutPlan = chatGTPResponseDTO.choices[0].message.content) )
                     println("parseResponseBody")
-                    println(workoutInfo.toString())
+//                    println(workoutInfo.toString())
                     Result.Success(workoutInfo)
 
                 } ?: Result.Error("ResponseBody is null")

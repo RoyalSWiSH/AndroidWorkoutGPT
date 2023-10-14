@@ -105,9 +105,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 @Composable
 fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
-//    val workoutInfoState by workoutViewModel.workoutInfoState.observeAsState()
-//    private val workoutInfoState = MutableStateFlow<Result<WorkoutInfo>>(Result.Loading)
+
     val workoutInfoState by workoutViewModel.workoutInfoState.collectAsState()
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -123,7 +123,6 @@ fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
                 Text(text = "Error: $errorMessage")
             }
             Result.Loading -> {
-//                Text(text = "Loading...")
                 CircularProgressIndicator()
             }
             else -> {
@@ -141,8 +140,6 @@ fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
         }
     }
 }
-
-
 
 
 @Preview(showBackground = true)
