@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +37,7 @@ import bio.gelly.workoutplanner.data.model.WorkoutInfo
 import bio.gelly.workoutplanner.data.repository.WorkoutRepository
 import bio.gelly.workoutplanner.network.retrofit.WorkoutApiService
 import bio.gelly.workoutplanner.ui.viewmodel.WorkoutViewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.OkHttpClient
 //import androidx.fragment.app.Fragment
 //import androidx.fragment.app.viewModels
@@ -53,9 +55,9 @@ class MainActivity : ComponentActivity() {
         // Initialize Retrofit and create an instance of the Retrofit service class
 
         val okHttpClient = OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS) // Set the connection timeout to 30 seconds
-            .readTimeout(30, TimeUnit.SECONDS) // Set the read timeout to 30 seconds
-            .writeTimeout(30, TimeUnit.SECONDS) // Set the write timeout to 30 seconds
+            .connectTimeout(10, TimeUnit.SECONDS) // Set the connection timeout to 30 seconds
+            .readTimeout(40, TimeUnit.SECONDS) // Set the read timeout to 30 seconds
+            .writeTimeout(10, TimeUnit.SECONDS) // Set the write timeout to 30 seconds
             .build()
 
         val retrofit = Retrofit.Builder()
@@ -103,8 +105,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 @Composable
 fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
-    val workoutInfoState by workoutViewModel.workoutInfoState.observeAsState()
-
+//    val workoutInfoState by workoutViewModel.workoutInfoState.observeAsState()
+//    private val workoutInfoState = MutableStateFlow<Result<WorkoutInfo>>(Result.Loading)
+    val workoutInfoState by workoutViewModel.workoutInfoState.collectAsState()
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -120,7 +123,8 @@ fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
                 Text(text = "Error: $errorMessage")
             }
             Result.Loading -> {
-                Text(text = "Loading...")
+//                Text(text = "Loading...")
+                CircularProgressIndicator()
             }
             else -> {
                 // Handle other states if needed

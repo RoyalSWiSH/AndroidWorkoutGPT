@@ -16,6 +16,8 @@ import bio.gelly.workoutplanner.data.model.WorkoutInfo
 import bio.gelly.workoutplanner.data.repository.WorkoutRepository
 import bio.gelly.workoutplanner.data.repository.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -29,14 +31,26 @@ class WorkoutViewModel(private val workoutRepository: WorkoutRepository) : ViewM
     private val _responseBodyInfoState = MutableLiveData<Result<ResponseBody>>()
     val responseBody: LiveData<Result<ResponseBody>> = _responseBodyInfoState
 
-    val workoutInfoState: LiveData<Result<WorkoutInfo>> = liveData(Dispatchers.IO) {
-        emit(Result.Loading)
-        try {
-            val workoutInfo = fetchWorkoutInfo()
+//    private val _workoutInfoLiveData = MutableLiveData<Result<WorkoutInfo>>()
+//    val workoutInfoLiveData: LiveData<Result<WorkoutInfo>> = _workoutInfoLiveData
+    private val _workoutInfoState = MutableStateFlow<Result<WorkoutInfo>>(Result.Loading)
+    val workoutInfoState: StateFlow<Result<WorkoutInfo>> = _workoutInfoState
 
-            emit(workoutInfo)
-        } catch (e: Exception) {
-            emit(Result.Error(e.localizedMessage ?: "An error occurred"))
+//    val workoutInfoState: LiveData<Result<WorkoutInfo>> = liveData(Dispatchers.IO) {
+init {
+    // You can initialize your StateFlow here, if needed.
+    refreshWorkoutInfo()
+}
+
+    fun refreshWorkoutInfo() {
+        viewModelScope.launch {
+            _workoutInfoState.value = Result.Loading
+            try {
+                val workoutInfo = fetchWorkoutInfo()
+                _workoutInfoState.value = workoutInfo
+            } catch (e: Exception) {
+                _workoutInfoState.value = Result.Error(e.localizedMessage ?: "An error occurred")
+            }
         }
     }
 
@@ -45,16 +59,16 @@ class WorkoutViewModel(private val workoutRepository: WorkoutRepository) : ViewM
     }
 
     // Function to fetch workout information
-    fun refreshWorkoutInfo() {
-        viewModelScope.launch {
-            try {
-                val workoutInfo = fetchWorkoutInfo()
-//                workoutInfoState.emit(Result.Success(workoutInfo))
-            } catch (e: Exception) {
-//                workoutInfoState.emit(Result.Error(e.localizedMessage ?: "An error occurred"))
-            }
-        }
-    }
+//    fun refreshWorkoutInfo() {
+//        viewModelScope.launch {
+//            try {
+//                val workoutInfo = fetchWorkoutInfo()
+//                workoutInfoState.postValue(workoutInfo)
+//            } catch (e: Exception) {
+//                workoutInfoState.postValue(Result.Error(e.localizedMessage ?: "An error occurred"))
+//            }
+//        }
+//    }
 
 //    fun fetchWorkoutInfo() {
 //        // Perform the data fetching operation, e.g., using a repository

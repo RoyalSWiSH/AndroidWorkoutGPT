@@ -18,8 +18,9 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
             // You can implement the logic to fetch workout data from a data source (e.g., API, database)
             val apiRequest = ApiRequest(
                 model = "gpt-3.5-turbo",
-                messages = listOf(Message(role = "user", content = "Create a short Workout Plan")),
-                temperature = 0.9
+                messages = listOf(Message(role = "user", content = "Create a workout")),
+                temperature = 0.8,
+                max_tokens=200
             )
             val requestBodyJson = Gson().toJson(apiRequest)
 
