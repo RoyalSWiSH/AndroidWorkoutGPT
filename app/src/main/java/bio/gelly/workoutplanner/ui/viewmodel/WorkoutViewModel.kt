@@ -29,7 +29,7 @@ class WorkoutViewModel(private val workoutRepository: WorkoutRepository) : ViewM
     private val _responseBodyInfoState = MutableLiveData<Result<ResponseBody>>()
     val responseBody: LiveData<Result<ResponseBody>> = _responseBodyInfoState
 
-    val workoutInfoState: LiveData<Result<ResponseBody>> = liveData(Dispatchers.IO) {
+    val workoutInfoState: LiveData<Result<WorkoutInfo>> = liveData(Dispatchers.IO) {
         emit(Result.Loading)
         try {
             val workoutInfo = fetchWorkoutInfo()
@@ -40,7 +40,7 @@ class WorkoutViewModel(private val workoutRepository: WorkoutRepository) : ViewM
         }
     }
 
-    private suspend fun fetchWorkoutInfo(): Result<ResponseBody> {
+    private suspend fun fetchWorkoutInfo(): Result<WorkoutInfo> {
         return workoutRepository.getWorkoutInfo()
     }
 

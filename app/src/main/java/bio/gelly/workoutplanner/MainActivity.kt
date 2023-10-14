@@ -9,7 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,12 +28,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import bio.gelly.workoutplanner.data.datasource.WorkoutDataSource
 import bio.gelly.workoutplanner.data.datasource.WorkoutRemoteDataSource
+import bio.gelly.workoutplanner.data.model.WorkoutInfo
 import bio.gelly.workoutplanner.data.repository.WorkoutRepository
 import bio.gelly.workoutplanner.network.retrofit.WorkoutApiService
 import bio.gelly.workoutplanner.ui.viewmodel.WorkoutViewModelFactory
+import okhttp3.OkHttpClient
 //import androidx.fragment.app.Fragment
 //import androidx.fragment.app.viewModels
 
@@ -39,13 +45,22 @@ import bio.gelly.workoutplanner.ui.viewmodel.WorkoutViewModelFactory
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : ComponentActivity() {
     private fun createWorkoutApiService(): WorkoutApiService {
         // Initialize Retrofit and create an instance of the Retrofit service class
+
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS) // Set the connection timeout to 30 seconds
+            .readTimeout(30, TimeUnit.SECONDS) // Set the read timeout to 30 seconds
+            .writeTimeout(30, TimeUnit.SECONDS) // Set the write timeout to 30 seconds
+            .build()
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.openai.com/v1/")
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -65,7 +80,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+//                    Greeting("Android")
 
                     // Create ViewModelFactory and ViewModel
                     val viewModelFactory = WorkoutViewModelFactory(workoutRepository)
@@ -88,52 +103,39 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 @Composable
 fun WorkoutScreen(workoutViewModel: WorkoutViewModel) {
-
-//    val result: Result<WorkoutInfo> by workoutViewModel.fetchWorkoutInfo().observeAsState()
-
-//    val workoutInfoLiveData: LiveData<Result<WorkoutInfo>> = workoutViewModel.workoutInfoState
-//    val workoutInfoState by workoutInfoLiveData.observeAsState(initial = Result.Loading)
-//    val workoutViewModel: WorkoutViewModel = hiltViewModel()
-
-//    val workoutInfoState by workoutViewModel.workoutInfoState.collectAsState()
-//    val workoutViewModel: WorkoutViewModel =  viewModel()
     val workoutInfoState by workoutViewModel.workoutInfoState.observeAsState()
 
     Column(
-       modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (workoutInfoState) {
-            is Result.Success<ResponseBody> -> {
-                val workoutInfo = (workoutInfoState as Result.Success<ResponseBody>).data
-                // Render the UI with the successful data
-//                Text(text = "Workout Plan: ${workoutInfo.workoutData.workoutPlan}")
-
-                Text(text = "Workout Plan: $workoutInfo")
-                println(workoutInfo.toString())
+            is Result.Success -> {
+                val workoutInfo = (workoutInfoState as Result.Success<WorkoutInfo>).data
+                Text(text = "Workout Plan: ${workoutInfo.workoutData.workoutPlan}")
             }
-
             is Result.Error -> {
                 val errorMessage = (workoutInfoState as Result.Error).errorMessage
-                // Render the UI with an error message
                 Text(text = "Error: $errorMessage")
             }
-
             Result.Loading -> {
-                // Render loading UI
                 Text(text = "Loading...")
             }
             else -> {
-                // Render loading UI or handle other states
+                // Handle other states if needed
             }
         }
-    }
-        // Button to fetch the workout
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = { workoutViewModel.refreshWorkoutInfo() },
-            content = { Text("Fetch Workout Info") }
-        )
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(text = "Fetch Workout Info")
+        }
+    }
 }
 
 

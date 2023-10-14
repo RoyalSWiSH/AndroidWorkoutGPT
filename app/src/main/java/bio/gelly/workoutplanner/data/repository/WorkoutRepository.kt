@@ -13,24 +13,25 @@ import okhttp3.ResponseBody
 class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
 
     // Function to fetch workout data
-    suspend fun getWorkoutInfo(): Result<ResponseBody> {
+    suspend fun getWorkoutInfo(): Result<WorkoutInfo> {
         return try {
             // You can implement the logic to fetch workout data from a data source (e.g., API, database)
             val apiRequest = ApiRequest(
                 model = "gpt-3.5-turbo",
-                messages = listOf(Message(role = "user", content = "Make a joke!")),
-                temperature = 0.7
+                messages = listOf(Message(role = "user", content = "Create a short Workout Plan")),
+                temperature = 0.9
             )
             val requestBodyJson = Gson().toJson(apiRequest)
 
             val requestBody = RequestBody.create(MediaType.parse("application/json"), requestBodyJson)
-
-            val result = workoutDataSource.fetchWorkoutData(requestBody)
-            when (result) {
+            println("WorkoutRepository getWorkoutInfo")
+            when (val result = workoutDataSource.fetchWorkoutData(requestBody)) {
                 is Result.Success -> {
                     val workoutInfo = result.data
                     // Handle the successful response here
                     // TODO: Cast responsebody to workoutinfo
+                    println("WorkoutRepository")
+                    println(result.data)
 
                     Result.Success(workoutInfo)
                 }
@@ -44,6 +45,10 @@ class WorkoutRepository(private val workoutDataSource: WorkoutDataSource) {
                     // Handle the error response here
                     Result.Loading
                     }
+                else -> {
+                    println("Result is null")
+                    Result.Error("Error when casting Result")
+                }
             }
 
 

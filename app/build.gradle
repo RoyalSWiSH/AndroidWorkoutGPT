@@ -69,9 +69,10 @@ dependencies {
 //    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.6.0" // Remember state when device rotates
 //    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0'
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.6.2" // Use the appropriate version
-    implementation "androidx.lifecycle:lifecycle-livedata:2.6.2" // Use the appropriate version
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2" // Use the appropriate version
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2" // Use the appropriate version
 //    implementation 'androidx.compose.runtime:runtime:1.4.3' //// ViewModel
 //    implementation 'androidx.compose.runtime:runtime-livedata:1.4.3' // ViewModel
     implementation("org.zalando:logbook-okhttp2:3.5.0")
